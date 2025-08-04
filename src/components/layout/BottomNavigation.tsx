@@ -39,14 +39,14 @@ export const BottomNavigation = () => {
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  "flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-smooth min-w-0",
+                  "flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-smooth flex-1 max-w-[80px]",
                   isActive
                     ? "bg-primary text-primary-foreground shadow-soft"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                 )}
               >
                 <item.icon className="h-5 w-5 shrink-0" />
-                <span className="text-xs font-medium truncate">{item.label}</span>
+                <span className="text-xs font-medium text-center leading-tight">{item.label}</span>
               </Link>
             );
           })}

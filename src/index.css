@@ -8,7 +8,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 96%;
+    --background: 0 0% 98%;
     --foreground: 0 0% 20%;
 
     --card: 0 0% 100%;
@@ -20,10 +20,10 @@ All colors MUST be HSL.
     --primary: 346 77% 67%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 92%;
+    --secondary: 0 0% 95%;
     --secondary-foreground: 0 0% 25%;
 
-    --muted: 0 0% 94%;
+    --muted: 0 0% 96%;
     --muted-foreground: 0 0% 45%;
 
     --accent: 348 83% 47%;
@@ -40,8 +40,8 @@ All colors MUST be HSL.
 
     /* Custom design tokens */
     --gradient-primary: linear-gradient(135deg, hsl(346 77% 67%), hsl(348 83% 47%));
-    --gradient-soft: linear-gradient(180deg, hsl(0 0% 96%), hsl(0 0% 94%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(0 0% 97%));
+    --gradient-soft: linear-gradient(180deg, hsl(0 0% 98%), hsl(0 0% 96%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(0 0% 98%));
     
     --shadow-soft: 0 4px 20px -4px hsl(346 77% 67% / 0.1);
     --shadow-card: 0 8px 30px -8px hsl(346 77% 67% / 0.15);
