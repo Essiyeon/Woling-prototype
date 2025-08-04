@@ -49,7 +49,7 @@ export const UserMatching = () => {
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-4">
         <MessageCircle className="h-5 w-5 text-primary" />
-        <h2 className="text-lg font-semibold text-foreground">언어교환 친구 찾기</h2>
+        <h2 className="text-lg font-semibold text-foreground">우링 친구 찾기</h2>
       </div>
 
       <div className="space-y-4">

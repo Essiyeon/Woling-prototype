@@ -66,7 +66,7 @@ const Profile = () => {
           <User className="h-16 w-16 text-muted-foreground mx-auto mb-6" />
           <h2 className="text-xl font-semibold text-foreground mb-2">로그인이 필요합니다</h2>
           <p className="text-muted-foreground mb-6">
-            언어교환 서비스를 이용하려면 로그인해주세요.
+            우링(Woling) 서비스를 이용하려면 로그인해주세요.
           </p>
           <div className="space-y-3">
             <Button 
@@ -200,10 +200,10 @@ const Profile = () => {
         </div>
 
         {/* App Info */}
-        <Card className="p-4 border-0 shadow-card bg-gradient-card">
+        <Card className="p-4 border-0 shadow-card bg-gray-100">
           <div className="text-center text-sm text-muted-foreground">
-            <p className="mb-1">언어친구 v1.0</p>
-            <p>결혼 이주 여성을 위한 언어교환 서비스</p>
+            <p className="mb-1">우링(Woling) v1.0</p>
+            <p>결혼 이주 여성을 위한 우링 서비스</p>
           </div>
         </Card>
       </div>

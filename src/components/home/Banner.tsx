@@ -13,7 +13,7 @@ const bannerItems = [
   {
     id: 1,
     title: "신규 회원 환영 혜택",
-    description: "첫 언어교환 시작하고 무료 카페 쿠폰 받기!",
+    description: "첫 우링 시작하고 무료 카페 쿠폰 받기!",
     image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=800&q=80",
     type: "benefit"
   },
@@ -26,7 +26,7 @@ const bannerItems = [
   },
   {
     id: 3,
-    title: "언어교환 이벤트",
+    title: "우링 이벤트",
     description: "온라인 그룹 스터디 참여하기",
     image: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?auto=format&fit=crop&w=800&q=80",
     type: "event"
