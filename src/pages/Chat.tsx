@@ -90,13 +90,8 @@ const mockMessages: Message[] = [
 
 const Chat = () => {
   const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>(mockMessages);
-
-  const filteredChatRooms = mockChatRooms.filter(room =>
-    room.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   const selectedChat = mockChatRooms.find(room => room.id === selectedChatId);
 
@@ -221,20 +216,9 @@ const Chat = () => {
           </Button>
         </div>
 
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="채팅방 검색..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-card border-border"
-          />
-        </div>
-
         {/* Chat Rooms */}
         <div className="space-y-3">
-          {filteredChatRooms.map((room) => (
+          {mockChatRooms.map((room) => (
             <Card 
               key={room.id} 
               className="p-4 border-0 shadow-card hover:shadow-floating transition-spring cursor-pointer bg-gradient-card"
@@ -278,7 +262,7 @@ const Chat = () => {
           ))}
         </div>
 
-        {filteredChatRooms.length === 0 && (
+        {mockChatRooms.length === 0 && (
           <div className="text-center py-8">
             <MessageCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <p className="text-muted-foreground">채팅방이 없습니다.</p>

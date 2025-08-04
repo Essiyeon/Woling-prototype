@@ -1,6 +1,6 @@
 import { Layout } from "@/components/layout/Layout";
 import { useState } from "react";
-import { User, Edit, LogOut, Trash2, Globe, ChevronRight, Settings } from "lucide-react";
+import { User, Edit, LogOut, Trash2, Globe, ChevronRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -48,12 +48,6 @@ const Profile = () => {
       value: currentLanguage,
       showChevron: true
     },
-    {
-      icon: Settings,
-      label: "알림 설정",
-      action: () => console.log("알림 설정"),
-      showChevron: true
-    }
   ];
 
   const handleLogout = () => {

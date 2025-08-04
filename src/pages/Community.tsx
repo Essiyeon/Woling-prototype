@@ -1,11 +1,11 @@
 import { Layout } from "@/components/layout/Layout";
 import { useState } from "react";
-import { Heart, MessageCircle, Plus, Search } from "lucide-react";
+import { Heart, MessageCircle, Plus } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 interface Post {
   id: number;
@@ -17,7 +17,6 @@ interface Post {
   likes: number;
   comments: number;
   isLiked: boolean;
-  tags: string[];
 }
 
 const mockPosts: Post[] = [
@@ -30,8 +29,7 @@ const mockPosts: Post[] = [
     timestamp: "2시간 전",
     likes: 24,
     comments: 8,
-    isLiked: false,
-    tags: ["한국어학습", "발음", "팁"]
+    isLiked: false
   },
   {
     id: 2,
@@ -42,8 +40,7 @@ const mockPosts: Post[] = [
     timestamp: "5시간 전",
     likes: 18,
     comments: 12,
-    isLiked: true,
-    tags: ["요리", "한국문화", "김치찌개"]
+    isLiked: true
   },
   {
     id: 3,
@@ -54,31 +51,115 @@ const mockPosts: Post[] = [
     timestamp: "1일 전",
     likes: 15,
     comments: 6,
-    isLiked: false,
-    tags: ["모임", "오프라인", "강남구"]
+    isLiked: false
+  }
+];
+
+const mockVerifiedPosts: Post[] = [
+  {
+    id: 4,
+    title: "🔒 2024년 다문화가족지원센터 정책 안내",
+    content: "올해 새롭게 변경된 다문화가족지원센터의 주요 정책들을 안내드립니다. 한국어교육, 취업지원, 자녀양육 지원 등 다양한 프로그램이 확대되었습니다...",
+    author: "관리자",
+    authorCountry: "🇰🇷",
+    timestamp: "3일 전",
+    likes: 45,
+    comments: 12,
+    isLiked: false
+  },
+  {
+    id: 5,
+    title: "🔒 결혼이민자 취업 지원 프로그램 모집",
+    content: "고용노동부에서 진행하는 결혼이민자 대상 취업 지원 프로그램이 시작됩니다. 한국어 실력 향상부터 직업 교육까지 체계적으로 지원해드립니다...",
+    author: "다문화센터",
+    authorCountry: "🇰🇷",
+    timestamp: "1주일 전",
+    likes: 38,
+    comments: 8,
+    isLiked: false
   }
 ];
 
 const Community = () => {
   const [posts, setPosts] = useState<Post[]>(mockPosts);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [verifiedPosts, setVerifiedPosts] = useState<Post[]>(mockVerifiedPosts);
+  const [activeTab, setActiveTab] = useState("community");
 
-  const handleLike = (postId: number) => {
-    setPosts(prev => prev.map(post => 
-      post.id === postId 
-        ? { 
-            ...post, 
-            isLiked: !post.isLiked,
-            likes: post.isLiked ? post.likes - 1 : post.likes + 1
-          }
-        : post
-    ));
+  const handleLike = (postId: number, isVerified: boolean = false) => {
+    if (isVerified) {
+      setVerifiedPosts(prev => prev.map(post => 
+        post.id === postId 
+          ? { 
+              ...post, 
+              isLiked: !post.isLiked,
+              likes: post.isLiked ? post.likes - 1 : post.likes + 1
+            }
+          : post
+      ));
+    } else {
+      setPosts(prev => prev.map(post => 
+        post.id === postId 
+          ? { 
+              ...post, 
+              isLiked: !post.isLiked,
+              likes: post.isLiked ? post.likes - 1 : post.likes + 1
+            }
+          : post
+      ));
+    }
   };
 
-  const filteredPosts = posts.filter(post => 
-    post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+  const renderPostCard = (post: Post, isVerified: boolean = false) => (
+    <Card key={post.id} className="p-4 border-0 shadow-card hover:shadow-floating transition-spring bg-gradient-card">
+      {/* Post Header */}
+      <div className="flex items-start gap-3 mb-3">
+        <Avatar className="h-10 w-10">
+          <AvatarFallback className="bg-gradient-primary text-white text-sm">
+            {post.author.charAt(0)}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-semibold text-foreground">{post.author}</span>
+            <span className="text-lg">{post.authorCountry}</span>
+            <span className="text-sm text-muted-foreground">•</span>
+            <span className="text-sm text-muted-foreground">{post.timestamp}</span>
+            {isVerified && (
+              <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-700">
+                검증됨
+              </Badge>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Post Content */}
+      <div className="mb-3">
+        <h3 className="font-semibold text-foreground mb-2">{post.title}</h3>
+        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+          {post.content}
+        </p>
+      </div>
+
+      {/* Actions */}
+      <div className="flex items-center gap-4 pt-2 border-t border-border">
+        <button
+          onClick={() => handleLike(post.id, isVerified)}
+          className={`flex items-center gap-1 text-sm transition-smooth ${
+            post.isLiked 
+              ? "text-red-500" 
+              : "text-muted-foreground hover:text-red-500"
+          }`}
+        >
+          <Heart className={`h-4 w-4 ${post.isLiked ? "fill-current" : ""}`} />
+          <span>{post.likes}</span>
+        </button>
+        <button className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-smooth">
+          <MessageCircle className="h-4 w-4" />
+          <span>{post.comments}</span>
+        </button>
+      </div>
+    </Card>
   );
 
   return (
@@ -93,84 +174,33 @@ const Community = () => {
           </Button>
         </div>
 
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="게시글 검색..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-card border-border"
-          />
-        </div>
-
-        {/* Posts */}
-        <div className="space-y-4">
-          {filteredPosts.map((post) => (
-            <Card key={post.id} className="p-4 border-0 shadow-card hover:shadow-floating transition-spring bg-gradient-card">
-              {/* Post Header */}
-              <div className="flex items-start gap-3 mb-3">
-                <Avatar className="h-10 w-10">
-                  <AvatarFallback className="bg-gradient-primary text-white text-sm">
-                    {post.author.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-foreground">{post.author}</span>
-                    <span className="text-lg">{post.authorCountry}</span>
-                    <span className="text-sm text-muted-foreground">•</span>
-                    <span className="text-sm text-muted-foreground">{post.timestamp}</span>
-                  </div>
-                </div>
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="community">일반 커뮤니티</TabsTrigger>
+            <TabsTrigger value="verified">정책 & 소식</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="community" className="space-y-4 mt-6">
+            {posts.map((post) => renderPostCard(post, false))}
+            
+            {posts.length === 0 && (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">게시글이 없습니다.</p>
               </div>
-
-              {/* Post Content */}
-              <div className="mb-3">
-                <h3 className="font-semibold text-foreground mb-2">{post.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
-                  {post.content}
-                </p>
+            )}
+          </TabsContent>
+          
+          <TabsContent value="verified" className="space-y-4 mt-6">
+            {verifiedPosts.map((post) => renderPostCard(post, true))}
+            
+            {verifiedPosts.length === 0 && (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">정책 및 소식이 없습니다.</p>
               </div>
-
-              {/* Tags */}
-              {post.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1 mb-3">
-                  {post.tags.map((tag, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      #{tag}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="flex items-center gap-4 pt-2 border-t border-border">
-                <button
-                  onClick={() => handleLike(post.id)}
-                  className={`flex items-center gap-1 text-sm transition-smooth ${
-                    post.isLiked 
-                      ? "text-red-500" 
-                      : "text-muted-foreground hover:text-red-500"
-                  }`}
-                >
-                  <Heart className={`h-4 w-4 ${post.isLiked ? "fill-current" : ""}`} />
-                  <span>{post.likes}</span>
-                </button>
-                <button className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-smooth">
-                  <MessageCircle className="h-4 w-4" />
-                  <span>{post.comments}</span>
-                </button>
-              </div>
-            </Card>
-          ))}
-        </div>
-
-        {filteredPosts.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">검색 결과가 없습니다.</p>
-          </div>
-        )}
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </Layout>
   );
