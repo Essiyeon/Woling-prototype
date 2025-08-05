@@ -168,10 +168,12 @@ const Community = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground">커뮤니티</h1>
-          <Button className="bg-gradient-primary hover:opacity-90 text-white border-0 shadow-soft">
-            <Plus className="h-4 w-4 mr-2" />
-            글쓰기
-          </Button>
+          {activeTab === "community" && (
+            <Button className="bg-gradient-primary hover:opacity-90 text-white border-0 shadow-soft">
+              <Plus className="h-4 w-4 mr-2" />
+              글쓰기
+            </Button>
+          )}
         </div>
 
         {/* Tabs */}

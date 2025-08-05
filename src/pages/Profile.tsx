@@ -155,28 +155,32 @@ const Profile = () => {
 
         {/* Action Buttons */}
         <div className="space-y-3 pt-4">
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="w-full justify-start gap-3 h-auto p-4"
-          >
-            <div className="p-2 bg-orange-100 rounded-lg">
-              <LogOut className="h-5 w-5 text-orange-600" />
-            </div>
-            <span className="font-medium">로그아웃</span>
-          </Button>
+          <Card className="p-4 border-0 shadow-card bg-card">
+            <Button
+              onClick={handleLogout}
+              variant="ghost"
+              className="w-full justify-start gap-3 h-auto p-0"
+            >
+              <div className="p-2 bg-orange-100 rounded-lg">
+                <LogOut className="h-5 w-5 text-orange-600" />
+              </div>
+              <span className="font-medium">로그아웃</span>
+            </Button>
+          </Card>
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full justify-start gap-3 h-auto p-4 border-red-200 text-red-600 hover:bg-red-50"
-              >
-                <div className="p-2 bg-red-100 rounded-lg">
-                  <Trash2 className="h-5 w-5 text-red-600" />
-                </div>
-                <span className="font-medium">회원 탈퇴</span>
-              </Button>
+              <Card className="p-4 border-0 shadow-card bg-card">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-3 h-auto p-0 text-red-600 hover:bg-transparent"
+                >
+                  <div className="p-2 bg-red-100 rounded-lg">
+                    <Trash2 className="h-5 w-5 text-red-600" />
+                  </div>
+                  <span className="font-medium">회원 탈퇴</span>
+                </Button>
+              </Card>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
