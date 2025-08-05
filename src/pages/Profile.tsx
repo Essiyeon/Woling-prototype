@@ -200,7 +200,7 @@ const Profile = () => {
         </div>
 
         {/* App Info */}
-        <Card className="p-4 border-0 shadow-card bg-gray-100">
+        <Card className="p-4 border-0 shadow-card bg-card">
           <div className="text-center text-sm text-muted-foreground">
             <p className="mb-1">우링(Woling) v1.0</p>
             <p>결혼 이주 여성을 위한 우링 서비스</p>
