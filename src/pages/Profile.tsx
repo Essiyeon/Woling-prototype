@@ -23,8 +23,6 @@ const Profile = () => {
   const [currentLanguage, setCurrentLanguage] = useState("한국어");
   const navigate = useNavigate();
   
-  // localStorage에서 로그인 상태 확인
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
   // Mock user data
   const user = {
@@ -55,42 +53,13 @@ const Profile = () => {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    navigate("/access-restricted");
+    console.log("로그아웃");
   };
 
   const handleDeleteAccount = () => {
     console.log("회원 탈퇴");
   };
 
-  if (!isLoggedIn) {
-    return (
-      <Layout>
-        <div className="text-center py-12">
-          <User className="h-16 w-16 text-muted-foreground mx-auto mb-6" />
-          <h2 className="text-xl font-semibold text-foreground mb-2">로그인이 필요합니다</h2>
-          <p className="text-muted-foreground mb-6">
-            우링(Woling) 서비스를 이용하려면 로그인해주세요.
-          </p>
-          <div className="space-y-3">
-            <Button 
-              className="w-full bg-gradient-primary hover:opacity-90 text-white border-0 shadow-soft"
-              onClick={() => navigate("/login")}
-            >
-              로그인
-            </Button>
-            <Button 
-              variant="outline" 
-              className="w-full"
-              onClick={() => console.log("회원가입")}
-            >
-              회원가입
-            </Button>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
 
   return (
     <Layout>
