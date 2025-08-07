@@ -1,6 +1,7 @@
 import { Layout } from "@/components/layout/Layout";
 import { useState } from "react";
 import { User, Edit, LogOut, Trash2, Globe, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,8 +20,11 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const Profile = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [currentLanguage, setCurrentLanguage] = useState("한국어");
+  const navigate = useNavigate();
+  
+  // localStorage에서 로그인 상태 확인
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
   // Mock user data
   const user = {
@@ -51,8 +55,8 @@ const Profile = () => {
   ];
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
-    console.log("로그아웃");
+    localStorage.removeItem("isLoggedIn");
+    navigate("/access-restricted");
   };
 
   const handleDeleteAccount = () => {
@@ -71,7 +75,7 @@ const Profile = () => {
           <div className="space-y-3">
             <Button 
               className="w-full bg-gradient-primary hover:opacity-90 text-white border-0 shadow-soft"
-              onClick={() => setIsLoggedIn(true)}
+              onClick={() => navigate("/login")}
             >
               로그인
             </Button>

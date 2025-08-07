@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import Community from "./pages/Community";
 import Chat from "./pages/Chat";
 import Profile from "./pages/Profile";
+import Login from "./pages/Login";
+import AccessRestricted from "./pages/AccessRestricted";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +24,8 @@ const App = () => (
           <Route path="/community" element={<Community />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/access-restricted" element={<AccessRestricted />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
