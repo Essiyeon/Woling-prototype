@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 // 타입 정의
@@ -144,19 +144,29 @@ export const UserMatching = () => {
 
           {/* 연령대 */}
           <div className="md:col-span-2">
-            <label className="block text-xs text-muted-foreground mb-2">연령대 (중복 선택 가능)</label>
-            <ToggleGroup
-              type="multiple"
-              value={ageGroups}
-              onValueChange={(vals) => setAgeGroups(vals as AgeGroup[])}
-              className="flex flex-wrap gap-2"
-            >
-              {ageGroupsOptions.map((g) => (
-                <ToggleGroupItem key={g} value={g} className="px-2 py-1 text-xs">
-                  {g}
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
+            <label className="block text-xs text-muted-foreground mb-2">연령대 (드롭다운, 중복 선택)</label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  {ageGroups.length === 0 ? "전체" : ageGroups.join(", ")}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 z-50 bg-popover">
+                <DropdownMenuLabel>연령대 선택</DropdownMenuLabel>
+                {ageGroupsOptions.map((g) => (
+                  <DropdownMenuCheckboxItem
+                    key={g}
+                    checked={ageGroups.includes(g)}
+                    onCheckedChange={(checked) => {
+                      if (checked) setAgeGroups([...ageGroups, g]);
+                      else setAgeGroups(ageGroups.filter((v) => v !== g));
+                    }}
+                  >
+                    {g}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <div className="mt-3 flex gap-2">
@@ -174,9 +184,9 @@ export const UserMatching = () => {
             onClick={() => openDetail(user)}
             className="p-3 border-0 shadow-card hover:shadow-floating transition-spring bg-gradient-card cursor-pointer"
           >
-            <div className="grid grid-cols-[auto,1fr,auto] items-center gap-3">
+            <div className="flex flex-col items-center text-center gap-2">
               <div className="relative">
-                <Avatar className="h-12 w-12">
+                <Avatar className="h-14 w-14">
                   <AvatarImage src={user.profileImage || ""} />
                   <AvatarFallback className="bg-gradient-primary text-white text-sm font-semibold">
                     {user.name.charAt(0)}
@@ -188,21 +198,17 @@ export const UserMatching = () => {
                   }`}
                 />
               </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-1">
-                  <h3 className="font-semibold text-sm text-foreground truncate max-w-[120px]">
-                    {user.name}
-                  </h3>
-                  <Badge variant="secondary" className="text-[10px]">
-                    {user.country} {user.countryName}
-                  </Badge>
-                </div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-sm text-foreground break-words">
+                  {user.name}
+                </h3>
+                <Badge variant="secondary" className="text-[10px]">
+                  {user.country} {user.countryName}
+                </Badge>
               </div>
-              <div className="text-right">
-                <p className="text-[11px] text-muted-foreground truncate max-w-[120px]">
-                  언어: {user.languages.join(", ")}
-                </p>
-              </div>
+              <p className="text-xs text-muted-foreground break-words">
+                언어: {user.languages.join(", ")}
+              </p>
             </div>
           </Card>
         ))}
