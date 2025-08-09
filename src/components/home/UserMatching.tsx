@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 // 타입 정의
@@ -24,49 +24,44 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 
 const timeSlots = ["오전", "오후", "저녁", "심야"] as const;
 
+type AgeGroup = "20대" | "30대" | "40대" | "50대";
+const ageGroupsOptions = ["20대", "30대", "40대", "50대"] as const;
+
+const ageToGroup = (age: number): AgeGroup | null => {
+  if (age >= 20 && age < 30) return "20대";
+  if (age >= 30 && age < 40) return "30대";
+  if (age >= 40 && age < 50) return "40대";
+  if (age >= 50 && age < 60) return "50대";
+  return null;
+};
+
 const users: User[] = [
-  {
-    id: 1,
-    name: "사라 (Sarah)",
-    age: 28,
-    country: "🇺🇸",
-    countryName: "미국",
-    region: "서울 강남구",
-    languages: ["영어", "한국어"],
-    profileImage: null,
-    status: "온라인",
-    availability: ["오전", "저녁"],
-  },
-  {
-    id: 2,
-    name: "리나 (Lina)",
-    age: 25,
-    country: "🇻🇳",
-    countryName: "베트남",
-    region: "부산 해운대구",
-    languages: ["베트남어", "한국어"],
-    profileImage: null,
-    status: "오프라인",
-    availability: ["오후", "저녁"],
-  },
-  {
-    id: 3,
-    name: "마리아 (Maria)",
-    age: 32,
-    country: "🇵🇭",
-    countryName: "필리핀",
-    region: "인천 연수구",
-    languages: ["영어", "타갈로그어", "한국어"],
-    profileImage: null,
-    status: "온라인",
-    availability: ["오전", "심야"],
-  },
+  { id: 1, name: "사라 (Sarah)", age: 28, country: "🇺🇸", countryName: "미국", region: "서울 강남구", languages: ["영어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "저녁"] },
+  { id: 2, name: "리나 (Lina)", age: 25, country: "🇻🇳", countryName: "베트남", region: "부산 해운대구", languages: ["베트남어", "한국어"], profileImage: null, status: "오프라인", availability: ["오후", "저녁"] },
+  { id: 3, name: "마리아 (Maria)", age: 32, country: "🇵🇭", countryName: "필리핀", region: "인천 연수구", languages: ["영어", "타갈로그어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "심야"] },
+  { id: 4, name: "메이 (Mei)", age: 22, country: "🇨🇳", countryName: "중국", region: "서울 서대문구", languages: ["중국어", "한국어"], profileImage: null, status: "온라인", availability: ["오후"] },
+  { id: 5, name: "유키 (Yuki)", age: 35, country: "🇯🇵", countryName: "일본", region: "경기 성남시", languages: ["일본어", "한국어"], profileImage: null, status: "오프라인", availability: ["저녁"] },
+  { id: 6, name: "나린 (Narin)", age: 41, country: "🇹🇭", countryName: "태국", region: "대구 달서구", languages: ["태국어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "오후"] },
+  { id: 7, name: "아마라 (Amara)", age: 29, country: "🇲🇳", countryName: "몽골", region: "인천 미추홀구", languages: ["몽골어", "한국어"], profileImage: null, status: "온라인", availability: ["심야"] },
+  { id: 8, name: "나탈리아 (Natalia)", age: 34, country: "🇷🇺", countryName: "러시아", region: "서울 마포구", languages: ["러시아어", "영어", "한국어"], profileImage: null, status: "오프라인", availability: ["오전", "저녁"] },
+  { id: 9, name: "라일라 (Layla)", age: 27, country: "🇺🇿", countryName: "우즈베키스탄", region: "경기 부천시", languages: ["우즈베크어", "러시아어", "한국어"], profileImage: null, status: "온라인", availability: ["오후"] },
+  { id: 10, name: "사라야 (Saraya)", age: 31, country: "🇳🇵", countryName: "네팔", region: "서울 구로구", languages: ["네팔어", "영어", "한국어"], profileImage: null, status: "오프라인", availability: ["저녁", "심야"] },
+  { id: 11, name: "안다니아 (Andania)", age: 24, country: "🇮🇩", countryName: "인도네시아", region: "인천 남동구", languages: ["인도네시아어", "영어", "한국어"], profileImage: null, status: "온라인", availability: ["오전"] },
+  { id: 12, name: "소피아 (Sophia)", age: 45, country: "🇰🇭", countryName: "캄보디아", region: "서울 관악구", languages: ["크메르어", "한국어"], profileImage: null, status: "오프라인", availability: ["오후", "저녁"] },
+  { id: 13, name: "마야 (Maya)", age: 39, country: "🇲🇲", countryName: "미얀마", region: "대전 유성구", languages: ["버마어", "영어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "오후"] },
+  { id: 14, name: "안나 (Anna)", age: 26, country: "🇮🇳", countryName: "인도", region: "서울 동대문구", languages: ["힌디어", "영어", "한국어"], profileImage: null, status: "온라인", availability: ["저녁"] },
+  { id: 15, name: "아이샤 (Aisha)", age: 33, country: "🇵🇰", countryName: "파키스탄", region: "부산 남구", languages: ["우르두어", "영어", "한국어"], profileImage: null, status: "오프라인", availability: ["오전", "심야"] },
+  { id: 16, name: "아일라 (Aila)", age: 52, country: "🇰🇬", countryName: "키르기스스탄", region: "서울 성북구", languages: ["키르기스어", "러시아어", "한국어"], profileImage: null, status: "온라인", availability: ["오전"] },
+  { id: 17, name: "알리나 (Alina)", age: 48, country: "🇰🇿", countryName: "카자흐스탄", region: "인천 계양구", languages: ["카자흐어", "러시아어", "한국어"], profileImage: null, status: "오프라인", availability: ["오후"] },
+  { id: 18, name: "지에 (Gia)", age: 23, country: "🇱🇦", countryName: "라오스", region: "광주 북구", languages: ["라오어", "태국어", "한국어"], profileImage: null, status: "온라인", availability: ["심야"] },
+  { id: 19, name: "니샤 (Nisha)", age: 37, country: "🇱🇰", countryName: "스리랑카", region: "서울 은평구", languages: ["싱할라어", "영어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "저녁"] },
+  { id: 20, name: "하나 (Hana)", age: 55, country: "🇲🇾", countryName: "말레이시아", region: "경기 고양시", languages: ["말레이어", "영어", "한국어"], profileImage: null, status: "오프라인", availability: ["오후", "저녁"] },
 ];
 
 export const UserMatching = () => {
   const [countryFilter, setCountryFilter] = useState<string>("전체");
   const [timeFilter, setTimeFilter] = useState<string>("전체");
-  const [ageRange, setAgeRange] = useState<number[]>([18, 60]);
+  const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([]);
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
@@ -78,17 +73,17 @@ export const UserMatching = () => {
   const filteredUsers = useMemo(() => {
     return users.filter((u) => {
       const matchCountry = countryFilter === "전체" || u.countryName === countryFilter;
-      const matchTime =
-        timeFilter === "전체" || u.availability.includes(timeFilter as any);
-      const matchAge = u.age >= ageRange[0] && u.age <= ageRange[1];
+      const matchTime = timeFilter === "전체" || u.availability.includes(timeFilter as any);
+      const group = ageToGroup(u.age);
+      const matchAge = ageGroups.length === 0 || (group !== null && ageGroups.includes(group));
       return matchCountry && matchTime && matchAge;
     });
-  }, [countryFilter, timeFilter, ageRange]);
+  }, [countryFilter, timeFilter, ageGroups]);
 
   const resetFilters = () => {
     setCountryFilter("전체");
     setTimeFilter("전체");
-    setAgeRange([18, 60]);
+    setAgeGroups([]);
   };
 
   const handleStartChat = (userId: number, userName: string) => {
@@ -149,14 +144,19 @@ export const UserMatching = () => {
 
           {/* 연령대 */}
           <div className="md:col-span-2">
-            <label className="block text-xs text-muted-foreground mb-2">연령대: {ageRange[0]} - {ageRange[1]}세</label>
-            <Slider
-              min={18}
-              max={60}
-              step={1}
-              value={ageRange}
-              onValueChange={(v) => setAgeRange(v as number[])}
-            />
+            <label className="block text-xs text-muted-foreground mb-2">연령대 (중복 선택 가능)</label>
+            <ToggleGroup
+              type="multiple"
+              value={ageGroups}
+              onValueChange={(vals) => setAgeGroups(vals as AgeGroup[])}
+              className="flex flex-wrap gap-2"
+            >
+              {ageGroupsOptions.map((g) => (
+                <ToggleGroupItem key={g} value={g} className="px-2 py-1 text-xs">
+                  {g}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
           </div>
         </div>
         <div className="mt-3 flex gap-2">
@@ -174,7 +174,7 @@ export const UserMatching = () => {
             onClick={() => openDetail(user)}
             className="p-3 border-0 shadow-card hover:shadow-floating transition-spring bg-gradient-card cursor-pointer"
           >
-            <div className="flex items-center gap-3">
+            <div className="grid grid-cols-[auto,1fr,auto] items-center gap-3">
               <div className="relative">
                 <Avatar className="h-12 w-12">
                   <AvatarImage src={user.profileImage || ""} />
@@ -197,14 +197,11 @@ export const UserMatching = () => {
                     {user.country} {user.countryName}
                   </Badge>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />{user.age}세
-                  </span>
-                  <span className="flex items-center gap-1 truncate max-w-[140px]">
-                    <MapPin className="h-3 w-3" />{user.region}
-                  </span>
-                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-[11px] text-muted-foreground truncate max-w-[120px]">
+                  언어: {user.languages.join(", ")}
+                </p>
               </div>
             </div>
           </Card>
