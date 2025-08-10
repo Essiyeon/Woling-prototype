@@ -186,14 +186,14 @@ export const UserMatching = () => {
           >
             <div className="flex flex-col items-center text-center gap-2">
               <div className="relative">
-                <Avatar className="h-14 w-14">
+                <Avatar className="h-10 w-10">
                   <AvatarImage src={user.profileImage || ""} />
-                  <AvatarFallback className="bg-gradient-primary text-white text-sm font-semibold">
+                  <AvatarFallback className="bg-gradient-primary text-white text-xs font-semibold">
                     {user.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div
-                  className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
+                  className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${
                     user.status === "온라인" ? "bg-green-500" : "bg-gray-400"
                   }`}
                 />
@@ -205,7 +205,7 @@ export const UserMatching = () => {
                 {user.country} {user.countryName}
               </Badge>
               <div className="flex flex-wrap gap-1 justify-center">
-                {user.languages.map((lang, i) => (
+                {user.languages.slice(0, 2).map((lang, i) => (
                   <Badge key={i} variant="outline" className="text-[10px]">
                     {lang}
                   </Badge>
