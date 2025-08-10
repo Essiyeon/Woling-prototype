@@ -1,23 +1,19 @@
 import { Layout } from "@/components/layout/Layout";
-import { useState } from "react";
-import { Heart, MessageCircle, Plus } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { useState, useMemo } from "react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { CategoryFilter } from "@/components/community/CategoryFilter";
+import { PostCard } from "@/components/community/PostCard";
+import { TodaysTopic } from "@/components/community/TodaysTopic";
+import { Post, PostCategory } from "@/types/community";
 
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  author: string;
-  authorCountry: string;
-  timestamp: string;
-  likes: number;
-  comments: number;
-  isLiked: boolean;
-}
+// 오늘의 주제 데이터
+const todaysTopic = {
+  question: "한국어를 배울 때 가장 어려운 점은 무엇인가요? 팁이 있다면 공유해주세요!",
+  date: "2024년 1월 10일",
+  responseCount: 12
+};
 
 const mockPosts: Post[] = [
   {
@@ -29,7 +25,8 @@ const mockPosts: Post[] = [
     timestamp: "2시간 전",
     likes: 24,
     comments: 8,
-    isLiked: false
+    isLiked: false,
+    category: "한국어"
   },
   {
     id: 2,
@@ -38,9 +35,10 @@ const mockPosts: Post[] = [
     author: "마리아",
     authorCountry: "🇵🇭",
     timestamp: "5시간 전",
-    likes: 18,
+    likes: 35,
     comments: 12,
-    isLiked: true
+    isLiked: true,
+    category: "문화"
   },
   {
     id: 3,
@@ -49,15 +47,52 @@ const mockPosts: Post[] = [
     author: "사라",
     authorCountry: "🇺🇸",
     timestamp: "1일 전",
-    likes: 15,
+    likes: 42,
     comments: 6,
-    isLiked: false
+    isLiked: false,
+    category: "자유"
+  },
+  {
+    id: 4,
+    title: "아이 한국 학교 적응 도움 필요해요",
+    content: "7살 아이가 한국 초등학교에 다니기 시작했는데 언어 장벽 때문에 힘들어해요. 비슷한 경험 있으신 분들의 조언 부탁드려요.",
+    author: "나린",
+    authorCountry: "🇹🇭",
+    timestamp: "3시간 전",
+    likes: 18,
+    comments: 15,
+    isLiked: false,
+    category: "육아"
+  },
+  {
+    id: 5,
+    title: "한국어 문법이 너무 어려워요",
+    content: "오늘의 주제에 답변드려요! 저는 조사가 가장 어려워요. 은/는, 이/가 언제 쓰는지 아직도 헷갈려요. 연습 방법 있을까요?",
+    author: "메이",
+    authorCountry: "🇨🇳",
+    timestamp: "30분 전",
+    likes: 8,
+    comments: 3,
+    isLiked: false,
+    category: "오늘의 주제"
+  },
+  {
+    id: 6,
+    title: "한국의 명절 문화 궁금해요",
+    content: "곧 설날이라고 하는데, 한국의 전통 명절 문화가 궁금해요. 어떤 음식을 먹고 어떤 활동을 하나요?",
+    author: "유키",
+    authorCountry: "🇯🇵",
+    timestamp: "6시간 전",
+    likes: 22,
+    comments: 9,
+    isLiked: true,
+    category: "문화"
   }
 ];
 
 const mockVerifiedPosts: Post[] = [
   {
-    id: 4,
+    id: 7,
     title: "🔒 2024년 다문화가족지원센터 정책 안내",
     content: "올해 새롭게 변경된 다문화가족지원센터의 주요 정책들을 안내드립니다. 한국어교육, 취업지원, 자녀양육 지원 등 다양한 프로그램이 확대되었습니다...",
     author: "관리자",
@@ -65,10 +100,12 @@ const mockVerifiedPosts: Post[] = [
     timestamp: "3일 전",
     likes: 45,
     comments: 12,
-    isLiked: false
+    isLiked: false,
+    category: "자유",
+    isVerified: true
   },
   {
-    id: 5,
+    id: 8,
     title: "🔒 결혼이민자 취업 지원 프로그램 모집",
     content: "고용노동부에서 진행하는 결혼이민자 대상 취업 지원 프로그램이 시작됩니다. 한국어 실력 향상부터 직업 교육까지 체계적으로 지원해드립니다...",
     author: "다문화센터",
@@ -76,7 +113,9 @@ const mockVerifiedPosts: Post[] = [
     timestamp: "1주일 전",
     likes: 38,
     comments: 8,
-    isLiked: false
+    isLiked: false,
+    category: "자유",
+    isVerified: true
   }
 ];
 
@@ -84,6 +123,7 @@ const Community = () => {
   const [posts, setPosts] = useState<Post[]>(mockPosts);
   const [verifiedPosts, setVerifiedPosts] = useState<Post[]>(mockVerifiedPosts);
   const [activeTab, setActiveTab] = useState("community");
+  const [activeCategory, setActiveCategory] = useState<PostCategory | "전체">("오늘의 주제");
 
   const handleLike = (postId: number, isVerified: boolean = false) => {
     if (isVerified) {
@@ -109,58 +149,24 @@ const Community = () => {
     }
   };
 
-  const renderPostCard = (post: Post, isVerified: boolean = false) => (
-    <Card key={post.id} className="p-4 border-0 shadow-card hover:shadow-floating transition-spring bg-gradient-card">
-      {/* Post Header */}
-      <div className="flex items-start gap-3 mb-3">
-        <Avatar className="h-10 w-10">
-          <AvatarFallback className="bg-gradient-primary text-white text-sm">
-            {post.author.charAt(0)}
-          </AvatarFallback>
-        </Avatar>
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="font-semibold text-foreground">{post.author}</span>
-            <span className="text-lg">{post.authorCountry}</span>
-            <span className="text-sm text-muted-foreground">•</span>
-            <span className="text-sm text-muted-foreground">{post.timestamp}</span>
-            {isVerified && (
-              <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-700">
-                검증됨
-              </Badge>
-            )}
-          </div>
-        </div>
-      </div>
+  // 필터링된 포스트들
+  const filteredPosts = useMemo(() => {
+    if (activeCategory === "전체") return posts;
+    return posts.filter(post => post.category === activeCategory);
+  }, [posts, activeCategory]);
 
-      {/* Post Content */}
-      <div className="mb-3">
-        <h3 className="font-semibold text-foreground mb-2">{post.title}</h3>
-        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
-          {post.content}
-        </p>
-      </div>
-
-      {/* Actions */}
-      <div className="flex items-center gap-4 pt-2 border-t border-border">
-        <button
-          onClick={() => handleLike(post.id, isVerified)}
-          className={`flex items-center gap-1 text-sm transition-smooth ${
-            post.isLiked 
-              ? "text-red-500" 
-              : "text-muted-foreground hover:text-red-500"
-          }`}
-        >
-          <Heart className={`h-4 w-4 ${post.isLiked ? "fill-current" : ""}`} />
-          <span>{post.likes}</span>
-        </button>
-        <button className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-smooth">
-          <MessageCircle className="h-4 w-4" />
-          <span>{post.comments}</span>
-        </button>
-      </div>
-    </Card>
-  );
+  // HOT 게시글 (좋아요 많은 순 3개) + 나머지 최신순
+  const sortedPosts = useMemo(() => {
+    const hotPosts = [...filteredPosts]
+      .sort((a, b) => b.likes - a.likes)
+      .slice(0, 3);
+    
+    const recentPosts = filteredPosts
+      .filter(post => !hotPosts.includes(post))
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    
+    return { hotPosts, recentPosts };
+  }, [filteredPosts]);
 
   return (
     <Layout>
@@ -183,18 +189,66 @@ const Community = () => {
             <TabsTrigger value="verified">정책 & 소식</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="community" className="space-y-4 mt-6">
-            {posts.map((post) => renderPostCard(post, false))}
+          <TabsContent value="community" className="space-y-6 mt-6">
+            {/* 오늘의 주제 카드 */}
+            {activeCategory === "오늘의 주제" && (
+              <TodaysTopic
+                question={todaysTopic.question}
+                date={todaysTopic.date}
+                responseCount={todaysTopic.responseCount}
+              />
+            )}
+
+            {/* 카테고리 필터 */}
+            <CategoryFilter
+              activeCategory={activeCategory}
+              onCategoryChange={setActiveCategory}
+            />
+
+            {/* HOT 게시글 */}
+            {sortedPosts.hotPosts.length > 0 && (
+              <div className="space-y-4">
+                <h2 className="text-lg font-semibold text-foreground">🔥 HOT 게시글</h2>
+                {sortedPosts.hotPosts.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    onLike={(id) => handleLike(id, false)}
+                    isHot={true}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* 최신 게시글 */}
+            {sortedPosts.recentPosts.length > 0 && (
+              <div className="space-y-4">
+                <h2 className="text-lg font-semibold text-foreground">최신 게시글</h2>
+                {sortedPosts.recentPosts.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    onLike={(id) => handleLike(id, false)}
+                  />
+                ))}
+              </div>
+            )}
             
-            {posts.length === 0 && (
+            {filteredPosts.length === 0 && (
               <div className="text-center py-8">
-                <p className="text-muted-foreground">게시글이 없습니다.</p>
+                <p className="text-muted-foreground">해당 카테고리에 게시글이 없습니다.</p>
               </div>
             )}
           </TabsContent>
           
           <TabsContent value="verified" className="space-y-4 mt-6">
-            {verifiedPosts.map((post) => renderPostCard(post, true))}
+            {verifiedPosts.map((post) => (
+              <PostCard
+                key={post.id}
+                post={post}
+                onLike={(id) => handleLike(id, true)}
+              />
+            ))}
             
             {verifiedPosts.length === 0 && (
               <div className="text-center py-8">
