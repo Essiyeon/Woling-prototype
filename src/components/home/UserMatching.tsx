@@ -198,17 +198,19 @@ export const UserMatching = () => {
                   }`}
                 />
               </div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-sm text-foreground break-words">
-                  {user.name}
-                </h3>
-                <Badge variant="secondary" className="text-[10px]">
-                  {user.country} {user.countryName}
-                </Badge>
+              <h3 className="font-semibold text-sm text-foreground break-words">
+                {user.name}
+              </h3>
+              <Badge variant="secondary" className="text-[10px]">
+                {user.country} {user.countryName}
+              </Badge>
+              <div className="flex flex-wrap gap-1 justify-center">
+                {user.languages.map((lang, i) => (
+                  <Badge key={i} variant="outline" className="text-[10px]">
+                    {lang}
+                  </Badge>
+                ))}
               </div>
-              <p className="text-xs text-muted-foreground break-words">
-                언어: {user.languages.join(", ")}
-              </p>
             </div>
           </Card>
         ))}
