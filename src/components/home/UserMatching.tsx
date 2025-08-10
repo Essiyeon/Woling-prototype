@@ -117,12 +117,12 @@ export const UserMatching = () => {
           <span>필터를 설정해보세요</span>
           <span className="ml-auto text-xs">결과: {filteredUsers.length}명</span>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           {/* 국적 */}
           <div>
-            <label className="block text-[10px] text-muted-foreground mb-1">국적</label>
+            <label className="block text-xs text-muted-foreground mb-1">국적</label>
             <Select value={countryFilter} onValueChange={setCountryFilter}>
-              <SelectTrigger className="w-full h-8 text-xs">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="국적 선택" />
               </SelectTrigger>
               <SelectContent>
@@ -136,9 +136,9 @@ export const UserMatching = () => {
 
           {/* 이용 시간대 */}
           <div>
-            <label className="block text-[10px] text-muted-foreground mb-1">시간대</label>
+            <label className="block text-xs text-muted-foreground mb-1">시간대</label>
             <Select value={timeFilter} onValueChange={setTimeFilter}>
-              <SelectTrigger className="w-full h-8 text-xs">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="시간대" />
               </SelectTrigger>
               <SelectContent>
@@ -152,9 +152,9 @@ export const UserMatching = () => {
 
           {/* 교환언어 */}
           <div>
-            <label className="block text-[10px] text-muted-foreground mb-1">언어</label>
+            <label className="block text-xs text-muted-foreground mb-1">언어</label>
             <Select value={languageFilter} onValueChange={setLanguageFilter}>
-              <SelectTrigger className="w-full h-8 text-xs">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="언어" />
               </SelectTrigger>
               <SelectContent>
@@ -168,15 +168,15 @@ export const UserMatching = () => {
 
           {/* 연령대 */}
           <div>
-            <label className="block text-[10px] text-muted-foreground mb-1">연령대</label>
+            <label className="block text-xs text-muted-foreground mb-1">연령대</label>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full h-8 text-xs justify-between">
+                <Button variant="outline" className="w-full justify-between">
                   {ageGroups.length === 0 ? "전체" : ageGroups.join(",")}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-48 z-50 bg-popover">
-                <DropdownMenuLabel className="text-xs">연령대 선택</DropdownMenuLabel>
+                <DropdownMenuLabel>연령대 선택</DropdownMenuLabel>
                 {ageGroupsOptions.map((g) => (
                   <DropdownMenuCheckboxItem
                     key={g}
@@ -185,7 +185,6 @@ export const UserMatching = () => {
                       if (checked) setAgeGroups([...ageGroups, g]);
                       else setAgeGroups(ageGroups.filter((v) => v !== g));
                     }}
-                    className="text-xs"
                   >
                     {g}
                   </DropdownMenuCheckboxItem>
@@ -195,16 +194,11 @@ export const UserMatching = () => {
           </div>
 
           {/* 초기화 버튼 */}
-          <div className="col-span-2 md:col-span-1">
-            <label className="block text-[10px] text-transparent mb-1">.</label>
-            <Button variant="outline" size="sm" onClick={resetFilters} className="w-full h-8 text-xs">
+          <div>
+            <label className="block text-xs text-transparent mb-1">.</label>
+            <Button variant="outline" size="sm" onClick={resetFilters} className="w-full">
               초기화
             </Button>
-          </div>
-
-          {/* 결과 표시 */}
-          <div className="col-span-2 sm:col-span-3 md:col-span-1 flex items-end">
-            <span className="text-[10px] text-muted-foreground">결과: {filteredUsers.length}명</span>
           </div>
         </div>
       </Card>
