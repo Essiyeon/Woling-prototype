@@ -117,12 +117,12 @@ export const UserMatching = () => {
           <span>필터를 설정해보세요</span>
           <span className="ml-auto text-xs">결과: {filteredUsers.length}명</span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
           {/* 국적 */}
           <div>
-            <label className="block text-xs text-muted-foreground mb-1">국적</label>
+            <label className="block text-[10px] text-muted-foreground mb-1">국적</label>
             <Select value={countryFilter} onValueChange={setCountryFilter}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full h-8 text-xs">
                 <SelectValue placeholder="국적 선택" />
               </SelectTrigger>
               <SelectContent>
@@ -136,10 +136,10 @@ export const UserMatching = () => {
 
           {/* 이용 시간대 */}
           <div>
-            <label className="block text-xs text-muted-foreground mb-1">이용 시간대</label>
+            <label className="block text-[10px] text-muted-foreground mb-1">시간대</label>
             <Select value={timeFilter} onValueChange={setTimeFilter}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="시간대 선택" />
+              <SelectTrigger className="w-full h-8 text-xs">
+                <SelectValue placeholder="시간대" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="전체">전체</SelectItem>
@@ -150,39 +150,12 @@ export const UserMatching = () => {
             </Select>
           </div>
 
-          {/* 연령대 */}
-          <div>
-            <label className="block text-xs text-muted-foreground mb-2">연령대</label>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
-                  {ageGroups.length === 0 ? "전체" : ageGroups.join(", ")}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 z-50 bg-popover">
-                <DropdownMenuLabel>연령대 선택</DropdownMenuLabel>
-                {ageGroupsOptions.map((g) => (
-                  <DropdownMenuCheckboxItem
-                    key={g}
-                    checked={ageGroups.includes(g)}
-                    onCheckedChange={(checked) => {
-                      if (checked) setAgeGroups([...ageGroups, g]);
-                      else setAgeGroups(ageGroups.filter((v) => v !== g));
-                    }}
-                  >
-                    {g}
-                  </DropdownMenuCheckboxItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
           {/* 교환언어 */}
           <div>
-            <label className="block text-xs text-muted-foreground mb-1">교환언어</label>
+            <label className="block text-[10px] text-muted-foreground mb-1">언어</label>
             <Select value={languageFilter} onValueChange={setLanguageFilter}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="언어 선택" />
+              <SelectTrigger className="w-full h-8 text-xs">
+                <SelectValue placeholder="언어" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="전체">전체</SelectItem>
@@ -192,9 +165,47 @@ export const UserMatching = () => {
               </SelectContent>
             </Select>
           </div>
-        </div>
-        <div className="mt-3 flex gap-2">
-          <Button variant="outline" size="sm" onClick={resetFilters}>초기화</Button>
+
+          {/* 연령대 */}
+          <div>
+            <label className="block text-[10px] text-muted-foreground mb-1">연령대</label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full h-8 text-xs justify-between">
+                  {ageGroups.length === 0 ? "전체" : ageGroups.join(",")}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-48 z-50 bg-popover">
+                <DropdownMenuLabel className="text-xs">연령대 선택</DropdownMenuLabel>
+                {ageGroupsOptions.map((g) => (
+                  <DropdownMenuCheckboxItem
+                    key={g}
+                    checked={ageGroups.includes(g)}
+                    onCheckedChange={(checked) => {
+                      if (checked) setAgeGroups([...ageGroups, g]);
+                      else setAgeGroups(ageGroups.filter((v) => v !== g));
+                    }}
+                    className="text-xs"
+                  >
+                    {g}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* 초기화 버튼 */}
+          <div className="col-span-2 md:col-span-1">
+            <label className="block text-[10px] text-transparent mb-1">.</label>
+            <Button variant="outline" size="sm" onClick={resetFilters} className="w-full h-8 text-xs">
+              초기화
+            </Button>
+          </div>
+
+          {/* 결과 표시 */}
+          <div className="col-span-2 sm:col-span-3 md:col-span-1 flex items-end">
+            <span className="text-[10px] text-muted-foreground">결과: {filteredUsers.length}명</span>
+          </div>
         </div>
       </Card>
 
