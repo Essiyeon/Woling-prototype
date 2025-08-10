@@ -62,11 +62,17 @@ export const UserMatching = () => {
   const [countryFilter, setCountryFilter] = useState<string>("전체");
   const [timeFilter, setTimeFilter] = useState<string>("전체");
   const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([]);
+  const [languageFilter, setLanguageFilter] = useState<string>("전체");
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const uniqueCountries = useMemo(
     () => Array.from(new Set(users.map((u) => u.countryName))),
+    []
+  );
+
+  const uniqueLanguages = useMemo(
+    () => Array.from(new Set(users.flatMap((u) => u.languages))),
     []
   );
 
@@ -76,14 +82,16 @@ export const UserMatching = () => {
       const matchTime = timeFilter === "전체" || u.availability.includes(timeFilter as any);
       const group = ageToGroup(u.age);
       const matchAge = ageGroups.length === 0 || (group !== null && ageGroups.includes(group));
-      return matchCountry && matchTime && matchAge;
+      const matchLanguage = languageFilter === "전체" || u.languages.includes(languageFilter);
+      return matchCountry && matchTime && matchAge && matchLanguage;
     });
-  }, [countryFilter, timeFilter, ageGroups]);
+  }, [countryFilter, timeFilter, ageGroups, languageFilter]);
 
   const resetFilters = () => {
     setCountryFilter("전체");
     setTimeFilter("전체");
     setAgeGroups([]);
+    setLanguageFilter("전체");
   };
 
   const handleStartChat = (userId: number, userName: string) => {
@@ -109,7 +117,7 @@ export const UserMatching = () => {
           <span>필터를 설정해보세요</span>
           <span className="ml-auto text-xs">결과: {filteredUsers.length}명</span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
           {/* 국적 */}
           <div>
             <label className="block text-xs text-muted-foreground mb-1">국적</label>
@@ -143,8 +151,8 @@ export const UserMatching = () => {
           </div>
 
           {/* 연령대 */}
-          <div className="md:col-span-2">
-            <label className="block text-xs text-muted-foreground mb-2">연령대 (드롭다운, 중복 선택)</label>
+          <div>
+            <label className="block text-xs text-muted-foreground mb-2">연령대</label>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
@@ -167,6 +175,22 @@ export const UserMatching = () => {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+          </div>
+
+          {/* 교환언어 */}
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">교환언어</label>
+            <Select value={languageFilter} onValueChange={setLanguageFilter}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="언어 선택" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="전체">전체</SelectItem>
+                {uniqueLanguages.map((lang) => (
+                  <SelectItem key={lang} value={lang}>{lang}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <div className="mt-3 flex gap-2">
@@ -198,9 +222,14 @@ export const UserMatching = () => {
                   }`}
                 />
               </div>
-              <h3 className="font-semibold text-sm text-foreground break-words">
-                {user.name}
-              </h3>
+              <div className="text-center">
+                <div className="font-semibold text-sm text-foreground">
+                  {user.name.split(' (')[0]}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {user.name.includes('(') ? user.name.match(/\(([^)]+)\)/)?.[1] : ''}
+                </div>
+              </div>
               <Badge variant="secondary" className="text-[10px]">
                 {user.country} {user.countryName}
               </Badge>
