@@ -253,6 +253,7 @@ const Community = () => {
             <CategoryFilter
               activeCategory={verifiedCategory}
               onCategoryChange={setVerifiedCategory}
+              categories={["전체", "육아", "한국어", "문화", "자유"]}
             />
 
             {filteredVerifiedPosts.map((post) => (

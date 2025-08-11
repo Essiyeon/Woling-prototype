@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 interface CategoryFilterProps {
   activeCategory: PostCategory | "전체";
   onCategoryChange: (category: PostCategory | "전체") => void;
+  categories?: Array<PostCategory | "전체">;
 }
 
-const categories: Array<PostCategory | "전체"> = [
+const defaultCategories: Array<PostCategory | "전체"> = [
   "전체",
   "오늘의 주제", 
   "육아", 
@@ -15,7 +16,7 @@ const categories: Array<PostCategory | "전체"> = [
   "자유"
 ];
 
-export const CategoryFilter = ({ activeCategory, onCategoryChange }: CategoryFilterProps) => {
+export const CategoryFilter = ({ activeCategory, onCategoryChange, categories = defaultCategories }: CategoryFilterProps) => {
   return (
     <div className="flex flex-wrap gap-2 mb-6">
       {categories.map((category) => (
