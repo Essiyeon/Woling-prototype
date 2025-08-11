@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { MessageCircle, MapPin, Calendar, SlidersHorizontal, Clock } from "lucide-react";
+import { MessageCircle, MapPin, Calendar, SlidersHorizontal, Clock, ThumbsUp, AlertTriangle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
   profileImage: string | null;
   status: "온라인" | "오프라인";
   availability: Array<"오전" | "오후" | "저녁" | "심야">;
+  recommendCount: number;
 };
 
 const timeSlots = ["오전", "오후", "저녁", "심야"] as const;
@@ -36,26 +37,26 @@ const ageToGroup = (age: number): AgeGroup | null => {
 };
 
 const users: User[] = [
-  { id: 1, name: "사라 (Sarah)", age: 28, country: "🇺🇸", countryName: "미국", region: "서울 강남구", languages: ["영어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "저녁"] },
-  { id: 2, name: "리나 (Lina)", age: 25, country: "🇻🇳", countryName: "베트남", region: "부산 해운대구", languages: ["베트남어", "한국어"], profileImage: null, status: "오프라인", availability: ["오후", "저녁"] },
-  { id: 3, name: "마리아 (Maria)", age: 32, country: "🇵🇭", countryName: "필리핀", region: "인천 연수구", languages: ["영어", "타갈로그어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "심야"] },
-  { id: 4, name: "메이 (Mei)", age: 22, country: "🇨🇳", countryName: "중국", region: "서울 서대문구", languages: ["중국어", "한국어"], profileImage: null, status: "온라인", availability: ["오후"] },
-  { id: 5, name: "유키 (Yuki)", age: 35, country: "🇯🇵", countryName: "일본", region: "경기 성남시", languages: ["일본어", "한국어"], profileImage: null, status: "오프라인", availability: ["저녁"] },
-  { id: 6, name: "나린 (Narin)", age: 41, country: "🇹🇭", countryName: "태국", region: "대구 달서구", languages: ["태국어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "오후"] },
-  { id: 7, name: "아마라 (Amara)", age: 29, country: "🇲🇳", countryName: "몽골", region: "인천 미추홀구", languages: ["몽골어", "한국어"], profileImage: null, status: "온라인", availability: ["심야"] },
-  { id: 8, name: "나탈리아 (Natalia)", age: 34, country: "🇷🇺", countryName: "러시아", region: "서울 마포구", languages: ["러시아어", "영어", "한국어"], profileImage: null, status: "오프라인", availability: ["오전", "저녁"] },
-  { id: 9, name: "라일라 (Layla)", age: 27, country: "🇺🇿", countryName: "우즈베키스탄", region: "경기 부천시", languages: ["우즈베크어", "러시아어", "한국어"], profileImage: null, status: "온라인", availability: ["오후"] },
-  { id: 10, name: "사라야 (Saraya)", age: 31, country: "🇳🇵", countryName: "네팔", region: "서울 구로구", languages: ["네팔어", "영어", "한국어"], profileImage: null, status: "오프라인", availability: ["저녁", "심야"] },
-  { id: 11, name: "안다니아 (Andania)", age: 24, country: "🇮🇩", countryName: "인도네시아", region: "인천 남동구", languages: ["인도네시아어", "영어", "한국어"], profileImage: null, status: "온라인", availability: ["오전"] },
-  { id: 12, name: "소피아 (Sophia)", age: 45, country: "🇰🇭", countryName: "캄보디아", region: "서울 관악구", languages: ["크메르어", "한국어"], profileImage: null, status: "오프라인", availability: ["오후", "저녁"] },
-  { id: 13, name: "마야 (Maya)", age: 39, country: "🇲🇲", countryName: "미얀마", region: "대전 유성구", languages: ["버마어", "영어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "오후"] },
-  { id: 14, name: "안나 (Anna)", age: 26, country: "🇮🇳", countryName: "인도", region: "서울 동대문구", languages: ["힌디어", "영어", "한국어"], profileImage: null, status: "온라인", availability: ["저녁"] },
-  { id: 15, name: "아이샤 (Aisha)", age: 33, country: "🇵🇰", countryName: "파키스탄", region: "부산 남구", languages: ["우르두어", "영어", "한국어"], profileImage: null, status: "오프라인", availability: ["오전", "심야"] },
-  { id: 16, name: "아일라 (Aila)", age: 52, country: "🇰🇬", countryName: "키르기스스탄", region: "서울 성북구", languages: ["키르기스어", "러시아어", "한국어"], profileImage: null, status: "온라인", availability: ["오전"] },
-  { id: 17, name: "알리나 (Alina)", age: 48, country: "🇰🇿", countryName: "카자흐스탄", region: "인천 계양구", languages: ["카자흐어", "러시아어", "한국어"], profileImage: null, status: "오프라인", availability: ["오후"] },
-  { id: 18, name: "지에 (Gia)", age: 23, country: "🇱🇦", countryName: "라오스", region: "광주 북구", languages: ["라오어", "태국어", "한국어"], profileImage: null, status: "온라인", availability: ["심야"] },
-  { id: 19, name: "니샤 (Nisha)", age: 37, country: "🇱🇰", countryName: "스리랑카", region: "서울 은평구", languages: ["싱할라어", "영어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "저녁"] },
-  { id: 20, name: "하나 (Hana)", age: 55, country: "🇲🇾", countryName: "말레이시아", region: "경기 고양시", languages: ["말레이어", "영어", "한국어"], profileImage: null, status: "오프라인", availability: ["오후", "저녁"] },
+  { id: 1, name: "사라 (Sarah)", age: 28, country: "🇺🇸", countryName: "미국", region: "서울 강남구", languages: ["영어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "저녁"], recommendCount: 15 },
+  { id: 2, name: "리나 (Lina)", age: 25, country: "🇻🇳", countryName: "베트남", region: "부산 해운대구", languages: ["베트남어", "한국어"], profileImage: null, status: "오프라인", availability: ["오후", "저녁"], recommendCount: 8 },
+  { id: 3, name: "마리아 (Maria)", age: 32, country: "🇵🇭", countryName: "필리핀", region: "인천 연수구", languages: ["영어", "타갈로그어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "심야"], recommendCount: 22 },
+  { id: 4, name: "메이 (Mei)", age: 22, country: "🇨🇳", countryName: "중국", region: "서울 서대문구", languages: ["중국어", "한국어"], profileImage: null, status: "온라인", availability: ["오후"], recommendCount: 12 },
+  { id: 5, name: "유키 (Yuki)", age: 35, country: "🇯🇵", countryName: "일본", region: "경기 성남시", languages: ["일본어", "한국어"], profileImage: null, status: "오프라인", availability: ["저녁"], recommendCount: 18 },
+  { id: 6, name: "나린 (Narin)", age: 41, country: "🇹🇭", countryName: "태국", region: "대구 달서구", languages: ["태국어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "오후"], recommendCount: 6 },
+  { id: 7, name: "아마라 (Amara)", age: 29, country: "🇲🇳", countryName: "몽골", region: "인천 미추홀구", languages: ["몽골어", "한국어"], profileImage: null, status: "온라인", availability: ["심야"], recommendCount: 9 },
+  { id: 8, name: "나탈리아 (Natalia)", age: 34, country: "🇷🇺", countryName: "러시아", region: "서울 마포구", languages: ["러시아어", "영어", "한국어"], profileImage: null, status: "오프라인", availability: ["오전", "저녁"], recommendCount: 31 },
+  { id: 9, name: "라일라 (Layla)", age: 27, country: "🇺🇿", countryName: "우즈베키스탄", region: "경기 부천시", languages: ["우즈베크어", "러시아어", "한국어"], profileImage: null, status: "온라인", availability: ["오후"], recommendCount: 14 },
+  { id: 10, name: "사라야 (Saraya)", age: 31, country: "🇳🇵", countryName: "네팔", region: "서울 구로구", languages: ["네팔어", "영어", "한국어"], profileImage: null, status: "오프라인", availability: ["저녁", "심야"], recommendCount: 7 },
+  { id: 11, name: "안다니아 (Andania)", age: 24, country: "🇮🇩", countryName: "인도네시아", region: "인천 남동구", languages: ["인도네시아어", "영어", "한국어"], profileImage: null, status: "온라인", availability: ["오전"], recommendCount: 11 },
+  { id: 12, name: "소피아 (Sophia)", age: 45, country: "🇰🇭", countryName: "캄보디아", region: "서울 관악구", languages: ["크메르어", "한국어"], profileImage: null, status: "오프라인", availability: ["오후", "저녁"], recommendCount: 5 },
+  { id: 13, name: "마야 (Maya)", age: 39, country: "🇲🇲", countryName: "미얀마", region: "대전 유성구", languages: ["버마어", "영어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "오후"], recommendCount: 16 },
+  { id: 14, name: "안나 (Anna)", age: 26, country: "🇮🇳", countryName: "인도", region: "서울 동대문구", languages: ["힌디어", "영어", "한국어"], profileImage: null, status: "온라인", availability: ["저녁"], recommendCount: 19 },
+  { id: 15, name: "아이샤 (Aisha)", age: 33, country: "🇵🇰", countryName: "파키스탄", region: "부산 남구", languages: ["우르두어", "영어", "한국어"], profileImage: null, status: "오프라인", availability: ["오전", "심야"], recommendCount: 13 },
+  { id: 16, name: "아일라 (Aila)", age: 52, country: "🇰🇬", countryName: "키르기스스탄", region: "서울 성북구", languages: ["키르기스어", "러시아어", "한국어"], profileImage: null, status: "온라인", availability: ["오전"], recommendCount: 3 },
+  { id: 17, name: "알리나 (Alina)", age: 48, country: "🇰🇿", countryName: "카자흐스탄", region: "인천 계양구", languages: ["카자흐어", "러시아어", "한국어"], profileImage: null, status: "오프라인", availability: ["오후"], recommendCount: 4 },
+  { id: 18, name: "지에 (Gia)", age: 23, country: "🇱🇦", countryName: "라오스", region: "광주 북구", languages: ["라오어", "태국어", "한국어"], profileImage: null, status: "온라인", availability: ["심야"], recommendCount: 10 },
+  { id: 19, name: "니샤 (Nisha)", age: 37, country: "🇱🇰", countryName: "스리랑카", region: "서울 은평구", languages: ["싱할라어", "영어", "한국어"], profileImage: null, status: "온라인", availability: ["오전", "저녁"], recommendCount: 25 },
+  { id: 20, name: "하나 (Hana)", age: 55, country: "🇲🇾", countryName: "말레이시아", region: "경기 고양시", languages: ["말레이어", "영어", "한국어"], profileImage: null, status: "오프라인", availability: ["오후", "저녁"], recommendCount: 2 },
 ];
 
 export const UserMatching = () => {
@@ -96,6 +97,16 @@ export const UserMatching = () => {
 
   const handleStartChat = (userId: number, userName: string) => {
     console.log(`Starting chat with user ${userId}: ${userName}`);
+  };
+
+  const handleRecommend = (userId: number, userName: string) => {
+    console.log(`Recommending user ${userId}: ${userName}`);
+    // TODO: 추천 로직 구현
+  };
+
+  const handleReport = (userId: number, userName: string) => {
+    console.log(`Reporting user ${userId}: ${userName}`);
+    // TODO: 신고 로직 구현
   };
 
   const openDetail = (user: User) => {
@@ -302,14 +313,32 @@ export const UserMatching = () => {
                       </Badge>
                     ))}
                   </div>
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground mt-2">
+                    <ThumbsUp className="h-4 w-4" />
+                    <span>추천받은 횟수: {selectedUser.recommendCount}회</span>
+                  </div>
                 </div>
               </div>
-              <DialogFooter className="mt-4">
+              <DialogFooter className="mt-4 flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => handleRecommend(selectedUser.id, selectedUser.name)}
+                  className="flex-1"
+                >
+                  <ThumbsUp className="h-4 w-4 mr-2" /> 추천
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleReport(selectedUser.id, selectedUser.name)}
+                  className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <AlertTriangle className="h-4 w-4 mr-2" /> 신고
+                </Button>
                 <Button
                   onClick={() => handleStartChat(selectedUser.id, selectedUser.name)}
-                  className="w-full bg-gradient-primary hover:opacity-90 text-white border-0 shadow-soft transition-spring"
+                  className="flex-1 bg-gradient-primary hover:opacity-90 text-white border-0 shadow-soft transition-spring"
                 >
-                  <MessageCircle className="h-4 w-4 mr-2" /> 채팅 시작하기
+                  <MessageCircle className="h-4 w-4 mr-2" /> 채팅
                 </Button>
               </DialogFooter>
             </div>

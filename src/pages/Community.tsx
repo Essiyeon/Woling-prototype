@@ -124,6 +124,7 @@ const Community = () => {
   const [verifiedPosts, setVerifiedPosts] = useState<Post[]>(mockVerifiedPosts);
   const [activeTab, setActiveTab] = useState("community");
   const [activeCategory, setActiveCategory] = useState<PostCategory | "전체">("오늘의 주제");
+  const [verifiedCategory, setVerifiedCategory] = useState<PostCategory | "전체">("전체");
 
   const handleLike = (postId: number, isVerified: boolean = false) => {
     if (isVerified) {
@@ -154,6 +155,12 @@ const Community = () => {
     if (activeCategory === "전체") return posts;
     return posts.filter(post => post.category === activeCategory);
   }, [posts, activeCategory]);
+
+  // 정책 소식 필터링된 포스트들
+  const filteredVerifiedPosts = useMemo(() => {
+    if (verifiedCategory === "전체") return verifiedPosts;
+    return verifiedPosts.filter(post => post.category === verifiedCategory);
+  }, [verifiedPosts, verifiedCategory]);
 
   // HOT 게시글 (좋아요 많은 순 3개) + 나머지 최신순
   const sortedPosts = useMemo(() => {
@@ -241,8 +248,14 @@ const Community = () => {
             )}
           </TabsContent>
           
-          <TabsContent value="verified" className="space-y-4 mt-6">
-            {verifiedPosts.map((post) => (
+          <TabsContent value="verified" className="space-y-6 mt-6">
+            {/* 정책소식 카테고리 필터 */}
+            <CategoryFilter
+              activeCategory={verifiedCategory}
+              onCategoryChange={setVerifiedCategory}
+            />
+
+            {filteredVerifiedPosts.map((post) => (
               <PostCard
                 key={post.id}
                 post={post}
@@ -250,9 +263,9 @@ const Community = () => {
               />
             ))}
             
-            {verifiedPosts.length === 0 && (
+            {filteredVerifiedPosts.length === 0 && (
               <div className="text-center py-8">
-                <p className="text-muted-foreground">정책 및 소식이 없습니다.</p>
+                <p className="text-muted-foreground">해당 카테고리에 정책 및 소식이 없습니다.</p>
               </div>
             )}
           </TabsContent>
