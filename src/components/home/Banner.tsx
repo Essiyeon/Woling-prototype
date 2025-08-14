@@ -8,6 +8,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { useEffect, useState } from "react";
+import type { CarouselApi } from "@/components/ui/carousel";
 
 const bannerItems = [
   {
@@ -41,6 +43,21 @@ const bannerItems = [
 ];
 
 export const Banner = () => {
+  const [api, setApi] = useState<CarouselApi>();
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (!api) return;
+
+    const interval = setInterval(() => {
+      if (!isHovered) {
+        api.scrollNext();
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [api, isHovered]);
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-4">
@@ -48,8 +65,13 @@ export const Banner = () => {
         <h2 className="text-lg font-semibold text-foreground">소식 & 혜택</h2>
       </div>
       
-      <Carousel className="w-full">
-        <CarouselContent className="-ml-2 md:-ml-4">
+      <div 
+        className="relative"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <Carousel className="w-full" setApi={setApi}>
+          <CarouselContent className="-ml-2 md:-ml-4">
           {bannerItems.map((item) => (
             <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-4/5">
               <Card className="border-0 shadow-card hover:shadow-floating transition-spring cursor-pointer bg-gradient-card overflow-hidden">
@@ -73,10 +95,19 @@ export const Banner = () => {
               </Card>
             </CarouselItem>
           ))}
-        </CarouselContent>
-        <CarouselPrevious className="left-2" />
-        <CarouselNext className="right-2" />
-      </Carousel>
+          </CarouselContent>
+          <CarouselPrevious 
+            className={`left-2 transition-opacity duration-200 ${
+              isHovered ? 'opacity-100' : 'opacity-0'
+            }`} 
+          />
+          <CarouselNext 
+            className={`right-2 transition-opacity duration-200 ${
+              isHovered ? 'opacity-100' : 'opacity-0'
+            }`} 
+          />
+        </Carousel>
+      </div>
     </div>
   );
 };

@@ -215,18 +215,18 @@ export const UserMatching = () => {
       </Card>
 
       {/* 결과 그리드 */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         {filteredUsers.map((user) => (
           <Card
             role="button"
             aria-label={`${user.name} 프로필 열기`}
             key={user.id}
             onClick={() => openDetail(user)}
-            className="p-3 border-0 shadow-card hover:shadow-floating transition-spring bg-gradient-card cursor-pointer"
+            className="p-2 border-0 shadow-card hover:shadow-floating transition-spring bg-gradient-card cursor-pointer"
           >
-            <div className="flex flex-col items-center text-center gap-2">
+            <div className="flex flex-col items-center text-center gap-1">
               <div className="relative">
-                <Avatar className="h-10 w-10">
+                <Avatar className="h-8 w-8">
                   <AvatarImage src={user.profileImage || ""} />
                   <AvatarFallback className="bg-gradient-primary text-white text-xs font-semibold">
                     {user.name.charAt(0)}
@@ -239,19 +239,19 @@ export const UserMatching = () => {
                 />
               </div>
               <div className="text-center">
-                <div className="font-semibold text-sm text-foreground">
+                <div className="font-semibold text-xs text-foreground">
                   {user.name.split(' (')[0]}
                 </div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-[10px] text-muted-foreground">
                   {user.name.includes('(') ? user.name.match(/\(([^)]+)\)/)?.[1] : ''}
                 </div>
               </div>
-              <Badge variant="secondary" className="text-[10px]">
-                {user.country} {user.countryName}
+              <Badge variant="secondary" className="text-[9px] px-1 py-0">
+                {user.country}
               </Badge>
-              <div className="flex flex-wrap gap-1 justify-center">
-                {user.languages.slice(0, 2).map((lang, i) => (
-                  <Badge key={i} variant="outline" className="text-[10px]">
+              <div className="flex flex-wrap gap-0.5 justify-center">
+                {user.languages.slice(0, 1).map((lang, i) => (
+                  <Badge key={i} variant="outline" className="text-[9px] px-1 py-0">
                     {lang}
                   </Badge>
                 ))}
@@ -298,12 +298,27 @@ export const UserMatching = () => {
                   <div className="text-sm text-muted-foreground flex items-center gap-1">
                     <MapPin className="h-4 w-4" /> {selectedUser.region}
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    {selectedUser.languages.map((lang, i) => (
-                      <Badge key={i} variant="outline" className="text-xs">
-                        {lang}
-                      </Badge>
-                    ))}
+                  <div className="space-y-2">
+                    <div>
+                      <span className="text-xs font-medium text-muted-foreground">내가 가르쳐줄 수 있는 언어:</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {selectedUser.languages.slice(0, 1).map((lang, i) => (
+                          <Badge key={i} variant="default" className="text-xs">
+                            {lang}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-xs font-medium text-muted-foreground">내가 배우고 싶은 언어:</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {selectedUser.languages.slice(1).map((lang, i) => (
+                          <Badge key={i} variant="secondary" className="text-xs">
+                            {lang}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                   <div className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
                     <Clock className="h-4 w-4" />
