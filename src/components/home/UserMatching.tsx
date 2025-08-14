@@ -239,22 +239,23 @@ export const UserMatching = () => {
                 />
               </div>
               <div className="text-center">
-                <div className="font-semibold text-xs text-foreground">
-                  {user.name.split(' (')[0]}
+                <div className="font-semibold text-xs text-foreground flex items-center justify-center gap-1">
+                  <span>{user.country}</span>
+                  <span>{user.name.split(' (')[0]}</span>
                 </div>
                 <div className="text-[10px] text-muted-foreground">
                   {user.name.includes('(') ? user.name.match(/\(([^)]+)\)/)?.[1] : ''}
                 </div>
               </div>
-              <Badge variant="secondary" className="text-[9px] px-1 py-0">
-                {user.country}
-              </Badge>
-              <div className="flex flex-wrap gap-0.5 justify-center">
-                {user.languages.slice(0, 1).map((lang, i) => (
-                  <Badge key={i} variant="outline" className="text-[9px] px-1 py-0">
-                    {lang}
-                  </Badge>
-                ))}
+              <div className="flex flex-col gap-0.5 w-full text-center">
+                <div className="text-[9px] text-muted-foreground">
+                  가르쳐줄: <span className="text-primary font-medium">{user.languages[0]}</span>
+                </div>
+                {user.languages.length > 1 && (
+                  <div className="text-[9px] text-muted-foreground">
+                    배울: <span className="text-secondary-foreground font-medium">{user.languages[1]}</span>
+                  </div>
+                )}
               </div>
             </div>
           </Card>
